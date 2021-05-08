@@ -1,0 +1,54 @@
+Last login: Sat May  8 09:00:22 2021 from ec2-13-52-6-112.us-west-1.compute.amazonaws.com
+
+       __|  __|_  )
+       _|  (     /   Amazon Linux 2 AMI
+      ___|\___|___|
+
+https://aws.amazon.com/amazon-linux-2/
+No packages needed for security; 2 packages available
+Run "sudo yum update" to apply all updates.
+[ec2-user@ip-10-1-10-48 ~]$ mysql -u admin -p -h aws-dxl-database-1-replica.cc1vkzkb4gzc.us-west-1.rds.amazonaws.com
+Enter password:
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 9
+Server version: 8.0.20 Source distribution
+
+Copyright (c) 2000, 2021, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> use udacity
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+mysql> SELECT * FROM tutorial;
++----------------------------+
+| tutorial_text              |
++----------------------------+
+| primary database written   |
+| primary database written 1 |
++----------------------------+
+2 rows in set (0.01 sec)
+
+mysql> CREATE TABLE tutorial_test (tutorial_uuid VARCHAR(255) PRIMARY KEY);
+Query OK, 0 rows affected (0.08 sec)
+
+mysql> INSERT INTO tutorial_test (tutorial_uuid) VALUES ('1212434kdfjasdlkfasdfdsaklfasdjf')
+    -> ;
+Query OK, 1 row affected (0.02 sec)
+
+mysql> SELECT * FROM tutorial_test
+    -> ;
++----------------------------------+
+| tutorial_uuid                    |
++----------------------------------+
+| 1212434kdfjasdlkfasdfdsaklfasdjf |
++----------------------------------+
+1 row in set (0.00 sec)
+
+mysql>
