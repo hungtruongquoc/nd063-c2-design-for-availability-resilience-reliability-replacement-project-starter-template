@@ -1,0 +1,70 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: RDS Storage Encrypted
+Parameters:
+  SourceDBInstanceIdentifier:
+    Type: String
+  DBInstanceType:
+    Type: String
+  SourceRegion:
+    Type: String
+
+  MasterUsername:
+    Type: String
+    Description: The username for our database.
+    Default: "admin"
+
+  MasterUserPassword:
+    Type: String
+    Description: The password for the database.
+    "NoEcho": true
+    Default: "password"
+
+Resources:
+
+  RDSDBSubnetGroup:
+    Type: "AWS::RDS::DBSubnetGroup"
+    Properties:
+      DBSubnetGroupDescription: "Subnet Group for replica mySQL database"
+      DBSubnetGroupName: !Sub "${AWS::Region}-aws-dxl-db-replica-subnet-group"
+      SubnetIds:
+        - !ImportValue privateSubnet1
+        - !ImportValue privateSubnet2
+      Tags:
+        - Key: Name
+          Value: eu-central-1-test-db-cluster
+        - Key: createdBy
+          Value: Hung Truong
+        - Key: Project
+          Value: test-blog
+        - Key: Environment
+          Value: test
+
+  MySqlReplica:
+    Type: "AWS::RDS::DBInstance"
+    Properties:
+      DBInstanceIdentifier: aws-dxl-database-1-replica
+      AllocatedStorage: 100
+      Engine: "MYSQL"
+      MultiAZ: true
+      EngineVersion: 8.0.20
+      DBInstanceClass: !Ref DBInstanceType
+      SourceDBInstanceIdentifier: !Ref SourceDBInstanceIdentifier
+      SourceRegion: !Ref SourceRegion
+      DBSubnetGroupName: !Ref RDSDBSubnetGroup
+      MasterUsername: !Ref MasterUsername
+      MasterUserPassword: !Ref MasterUserPassword
+      VPCSecurityGroups:
+        - !ImportValue DbSecurityGroup
+      Tags:
+        - Key: Name
+          Value: aws-dxl-database-1
+        - Key: createdBy
+          Value: Hung Truong
+        - Key: Project
+          Value: test-blog
+        - Key: Environment
+          Value: test
+Outputs:
+  InstanceId:
+    Description: InstanceId of the newly created RDS Instance
+    Value: !Ref MySqlReplica

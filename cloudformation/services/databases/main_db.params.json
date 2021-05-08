@@ -1,0 +1,14 @@
+[
+  {
+    "ParameterKey": "SourceDBInstanceIdentifier",
+    "ParameterValue": "arn:aws:rds:us-west-2:723567309652:db:aws-dxl-database-1"
+  },
+  {
+    "ParameterKey": "DBInstanceType",
+    "ParameterValue": "db.t2.micro"
+  },
+  {
+    "ParameterKey": "SourceRegion",
+    "ParameterValue": "us-west-2"
+  }
+]

@@ -1,0 +1,112 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Create a DB subnet group and MYSQL Database"
+
+Parameters:
+  VPC:
+    Type: String
+    Description: The VPC to create the cluster
+    Default: vpc-ID
+
+#  PrivateSubnet01:
+#    Type: String
+#    Description: The subnet for the DB cluster
+#    Default: !ImportValue privateSubnet1
+#
+#  PrivateSubnet02:
+#    Type: String
+#    Description: The subnet for the DB cluster
+#    Default: !ImportValue privateSubnet2
+
+  MasterUsername:
+    Type: String
+    Description: The username for our database.
+    Default: "admin"
+
+  MasterUserPassword:
+    Type: String
+    Description: The password for the database.
+    "NoEcho": true
+    Default: "password"
+
+#  ParameterGroup:
+#    Type: String
+#    Description: The name of the database parameter group created.
+
+Resources:
+    RDSDBParameterGroup:
+      Type: 'AWS::RDS::DBParameterGroup'
+      Properties:
+        Description: CloudFormation Sample MySQL Parameter Group
+        Family: mysql8.0
+        Parameters:
+          sql_mode: IGNORE_SPACE
+          max_allowed_packet: 1024
+          innodb_buffer_pool_size: '{DBInstanceClassMemory*3/4}'
+
+    RDSDBSubnetGroup:
+        Type: "AWS::RDS::DBSubnetGroup"
+        Properties:
+            DBSubnetGroupDescription: "Subnet Group for mySQL database"
+            DBSubnetGroupName: !Sub "${AWS::Region}-aws-dxl-database-subnet-group"
+            SubnetIds:
+              - !ImportValue privateSubnet1
+              - !ImportValue privateSubnet2
+            Tags:
+              - Key: Name
+                Value: eu-central-1-test-db-cluster
+              - Key: createdBy
+                Value: Maureen Barasa
+              - Key: Project
+                Value: test-blog
+              - Key: Environment
+                Value: test
+
+    RDSDBInstance:
+        Type: AWS::RDS::DBInstance
+        Properties:
+            DBInstanceIdentifier: aws-dxl-database-1
+            AllocatedStorage: 100
+            DBInstanceClass: db.t2.micro
+            DBName: "udacity"
+            Engine: "MYSQL"
+            MasterUsername: !Ref MasterUsername
+            MasterUserPassword: !Ref MasterUserPassword
+            BackupRetentionPeriod: 7
+            MultiAZ: true
+            EngineVersion: 8.0.20
+            AutoMinorVersionUpgrade: true
+            Iops: 1000
+            PubliclyAccessible: false
+            StorageType: io1
+            Port: 3306
+            StorageEncrypted: false
+            CopyTagsToSnapshot: true
+            MonitoringInterval: 60
+            EnableIAMDatabaseAuthentication: false
+#            EnablePerformanceInsights: true
+#            PerformanceInsightsRetentionPeriod: 7
+            DeletionProtection: false
+            DBSubnetGroupName: !Ref RDSDBSubnetGroup
+            VPCSecurityGroups:
+              - !ImportValue DbSecurityGroup
+            MaxAllocatedStorage: 1000
+            DBParameterGroupName: !Ref RDSDBParameterGroup
+            MonitoringRoleArn: "arn:aws:iam::723567309652:role/DBMonitoring"
+            Tags:
+              - Key: Name
+                Value: aws-dxl-database-1
+              - Key: createdBy
+                Value: Hung Truong
+              - Key: Project
+                Value: test-blog
+              - Key: Environment
+                Value: test
+
+Outputs:
+   Cluster:
+    Description: The DB Cluster Name
+    Value: !Ref RDSDBInstance
+
+   SubnetGroup:
+    Description: The db subnet group name
+    Value: !Ref RDSDBSubnetGroup

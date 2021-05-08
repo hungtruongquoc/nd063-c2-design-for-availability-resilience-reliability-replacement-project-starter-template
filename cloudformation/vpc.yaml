@@ -207,6 +207,8 @@ Outputs:
   VPC:
     Description: VPC ID
     Value: !Ref VPC
+    Export:
+      Name: !Ref VpcName
 
   PublicSubnets:
     Description: A list of the public subnets
@@ -216,10 +218,26 @@ Outputs:
     Description: A list of the private subnets
     Value: !Join [ ", ", [ !Ref PrivateSubnet1, !Ref PrivateSubnet2 ]]
 
+  PrivateSubnet1:
+    Description: First private subnet
+    Value: !Ref PrivateSubnet1
+    Export:
+      Name: "privateSubnet1"
+
+  PrivateSubnet2:
+    Description: Second private subnet
+    Value: !Ref PrivateSubnet2
+    Export:
+      Name: "privateSubnet2"
+
   DatabaseSecurityGroup:
     Description: ID of the database security group
     Value: !Ref DatabaseSecurityGroup
+    Export:
+      Name: "DbSecurityGroup"
 
   ApplicationSecurityGroup:
     Description: ID of the EC2 instance security group
     Value: !Ref ApplicationSecurityGroup
+    Export:
+      Name: "AppSecurityGroup"
