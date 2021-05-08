@@ -1,0 +1,47 @@
+[ec2-user@ip-10-1-10-94 ~]$ mysql
+ERROR 2002 (HY000): Can't connect to local MySQL server through socket '/var/lib/mysql/mysql.sock' (2)
+[ec2-user@ip-10-1-10-94 ~]$ mysql -u admin -p -h aws-dxl-database-1.chyqbr1he5ng.us-west-2.rds.amazonaws.com
+Enter password:
+ERROR 1045 (28000): Access denied for user 'admin'@'10.1.10.94' (using password: YES)
+[ec2-user@ip-10-1-10-94 ~]$ mysql -u admin -p -h aws-dxl-database-1.chyqbr1he5ng.us-west-2.rds.amazonaws.com
+Enter password:
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 31
+Server version: 8.0.20 Source distribution
+
+Copyright (c) 2000, 2021, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> use udacity
+Database changed
+mysql> get table
+    -> ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near
+'table' at line 1
+mysql> create table test
+    -> ;
+ERROR 1113 (42000): A table must have at least 1 column
+mysql> CREATE TABLE (tutorial_text VARCHAR(100) NOT NULL, PRIMARY KEY (tutorial_text));
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near
+'(tutorial_text VARCHAR(100) NOT NULL, PRIMARY KEY (tutorial_text))' at line 1
+mysql> CREATE TABLE tutorial (tutorial_text VARCHAR(100) NOT NULL, PRIMARY KEY (tutorial_text));
+Query OK, 0 rows affected (0.06 sec)
+
+mysql> INSERT INTO tutorial (tutorial_text) VALUES ('primary database written');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> SELECT * FROM tutorial
+    -> ;
++--------------------------+
+| tutorial_text            |
++--------------------------+
+| primary database written |
++--------------------------+
+1 row in set (0.00 sec)
+
+mysql>
